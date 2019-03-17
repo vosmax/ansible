@@ -33,7 +33,7 @@
   changed_when: false
   failed_when: false
   register: minikube_enable_result
-  when: minikube_ingress_result
+  when: minikube_ingress_result and minikube.enable_ingress
 
 
 - name: Wait ingress pod 

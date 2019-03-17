@@ -1,28 +1,30 @@
 ---
 minikube: 
-  version: '0.35.0'
-  enable_ingress: true 
+  version: 
+  enable_ingress: # < bool > Enable addon ingress 
 
 kubectl:
-  version: '1.13.0'  
+  version:   
 
 helm_vars: 
-  chratname: 'djangotodo'   
-  namespace: 'todo'
+  chartname:      # < Default "noname" >   
+  repo: 
+  namespace:      # < Default "default" > 
   env: 
-    SUPERUSER: 'todoadmin'
-    SUPERUSERPWD: 'test'
-    FLUSHDATA: 'true'  
-  db:
-    name: 'todo'
-    user: 'todouser'
-    password: 123465 
-    host: 'postgresdb-service'
-    port: 5432  
-    flush: true
+    SUPERUSER:    # Site superuser
+    SUPERUSERPWD: # Site superuser password
+    FLUSHDATA:   
+  db:             # DB settings for application connection 
+    name: 
+    user: 
+    password: 
+    host: 
+    port:   
+    flush: # < bool > Flush all data in database when apply helm 
   web:
-    host: 'ec2-18-185-114-17.eu-central-1.compute.amazonaws.com'  
+    host: # URL to aplication 
 
+# Needed packages
 packages: 
     - apt-transport-https 
     - ca-certificates 
@@ -37,6 +39,7 @@ packages:
     - iftop 
     - atop   
 
+# docker settings 
 docker: 
   version: '18.06.3~ce~3-0~ubuntu'
   apt:
