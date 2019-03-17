@@ -31,27 +31,31 @@
      sleep 15   
      helm plugin install --version master https://github.com/sagansystems/helm-github.git
   failed_when: false   
+  changed_when: false
 
-- template:
+- name: Generate values.yaml
+  template:
     src: values.yml.j2
-    dest: /values.yml 
+    dest: /app/values.yml 
   when: not stat_helm_status.failed
 
 - name: Apply django-todo chart
-  shell: "helm github upgrade --install {{ helm_vars.chartname | default('noname') }} -f /values.yml --namespace {{ helm_vars.chartname | default('default') }} --repo  {{ https://github.com/vosmax/djangotodo-chart.git }}"
+  shell: "helm github upgrade {{ helm_vars.chartname }} --install  -f /app/values.yml  --namespace {{ helm_vars.namespace }}  --repo {{ helm_vars.repo }}"
   failed_when: false
+  changed_when: false
   register: chart_apply_result
   when: not stat_helm_status.failed
 
 - name: Info message 
   debug:
       msg:
-        - '#####################################################################################'
+        - '#####################################################################################################'
         - '#                                                                                                      '
-        - '#   Site will be availabe soon. Need a bit time to download images and start up services               '
-        - "#   Application is available here: http://{{ helm_vars.web.host}}                                      "
+        - '#   App will be availabe soon! Give some time to download images and start up services!  Approx ~30sec '
+        - '#                                                                                                      '
+        - "#   Application is available here: http://{{ helm_vars.web.host}}                        "
+        - '#                                                                                                      '  
         - '#   If you run localy add dns record on you PC                                                         '
         - '#                                                                                                      '
         - '#  Note: Minikube configs saved in root home folder. Use them to manage minikube                       ' 
-        - '######################################################################################'  
-
+        - '######################################################################################################'

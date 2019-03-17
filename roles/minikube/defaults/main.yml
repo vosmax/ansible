@@ -7,9 +7,9 @@ kubectl:
   version:   
 
 helm_vars: 
-  chartname:      # < Default "noname" >   
-  repo: 
-  namespace:      # < Default "default" > 
+  chartname:      # Chart name  
+  repo:           # Chart repo
+  namespace:      # Namespace
   env: 
     SUPERUSER:    # Site superuser
     SUPERUSERPWD: # Site superuser password

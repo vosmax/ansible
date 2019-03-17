@@ -22,7 +22,7 @@ helm_vars:
     port: 5432  
     flush: true
   web:
-    host: 'ec2-18-195-23-17.eu-central-1.compute.amazonaws.com'  
+    host: 'super-popular.site'  
 
 packages: 
     - apt-transport-https 
