@@ -1,0 +1,103 @@
+# Default values for djangotodo-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+image:
+  repository: vosmax/django-todo
+  tag: v1
+  pullPolicy: Always
+
+secretKey: 
+
+# Define environment variables 
+# var_name: value
+env: 
+  SUPERUSER: {{ helm_vars.db.user }}
+  SUPERUSERPWD: {{ helm_vars.db.password }}
+  FLUSHDATA: "{{ helm_vars.db.flush }}"  
+
+
+# Define secret environment variables 
+# env_var_name: 
+#  name: secret_name
+#  key: secret_key 
+envSecrets:
+  DB_HOST:
+    name: db
+    key: host
+  DB_PORT:
+    name: db
+    key: port
+  DB_USER:
+    name: db
+    key: user
+  DB_PASSWORD:
+    name: db
+    key: password
+  DB_NAME:
+    name: db
+    key: name  
+
+service:
+  type: ClusterIP
+  protocol: TCP
+  port: 80
+  targetPort: 8000
+
+ingress:
+  enabled: true
+  annotations: 
+      # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "Request-Id: $req_id";
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+   
+  paths: ["/"]
+  hosts: ["{{ helm_vars.web.host }}"]
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Subcharts variables 
+# If variable won't be define will be applied cart default variable
+secrets: 
+  secretslist:  
+    db:
+      type: kubernetes.io/opaque
+      data: 
+        host: {{ helm_vars.db.host }}
+        port: {{ helm_vars.db.port }}
+        user: {{ helm_vars.db.user }}
+        password: {{ helm_vars.db.password }}
+        name: {{ helm_vars.db.name }}
+
+postgresql:
+  extradb:
+    name: {{ helm_vars.db.name }}
+    user: {{ helm_vars.db.user }}
+    password:  {{ helm_vars.db.password }}         

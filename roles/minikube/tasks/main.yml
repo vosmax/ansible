@@ -1,0 +1,40 @@
+---
+- name: Prepare env for minikube
+  include_tasks: base.yml
+
+- name: Check for existing kubectl installation
+  stat:
+    path: /usr/local/bin/kubectl
+  register: stat_kubectl_result     
+
+- name: Check kubectl version
+  command: kubectl version --client
+  changed_when: false
+  failed_when: false
+  register: kubectl_version_result
+  when: stat_kubectl_result.stat.exists
+
+- name: Include kubectl installation tasks
+  include_tasks: kubectl.yml
+  when: not stat_kubectl_result.stat.exists
+
+- name: Check for existing minikube installation
+  stat:
+    path: /usr/local/bin/minikube
+  register: stat_minikube_result
+
+- name: Check minikube version
+  command: minikube version
+  changed_when: false
+  failed_when: false
+  register: minikube_version_result
+  when: not stat_minikube_result.stat.exists
+
+- name: Include minikube installtion tasks
+  become: yes
+  include_tasks: minikube.yml
+  # when: not stat_minikube_result.stat.exists 
+
+- name: Include helm installtion tasks
+  become: yes
+  include_tasks: helm.yml

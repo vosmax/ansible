@@ -1,0 +1,59 @@
+---
+- name: Get minikube binary checksum
+  uri:
+    url: 'https://github.com/kubernetes/minikube/releases/download/v{{ minikube.version }}/minikube-linux-amd64.sha256'
+    return_content: yes
+  register: minikube_checksum_result
+  
+- name: Install minikube binary
+  get_url:
+    url: 'https://github.com/kubernetes/minikube/releases/download/v{{ minikube.version }}/minikube-linux-amd64'
+    dest: /usr/local/bin/minikube
+    owner: root
+    group: root
+    mode: 0755
+    checksum: "sha256:{{ minikube_checksum_result.content | regex_search('^[0-9a-f]{64}') }}"
+
+- copy:
+    src: files/run-minikube.sh
+    dest: /run-minikube.sh
+    mode: +x  
+
+- name: Start minikube
+  shell: sh /run-minikube.sh    
+# - name: Start minikube
+#   shell: |
+#         bash echo <<< EOL '\
+#         #!/usr/bin/env bash
+#         set -e
+
+#         export MINIKUBE_WANTUPDATENOTIFICATION=false \
+#         export MINIKUBE_WANTREPORTERRORPROMPT=false \
+#         export CHANGE_MINIKUBE_NONE_USER=true \
+#         export MINIKUBE_HOME=$HOME \
+#         export KUBECONFIG=$HOME/.kube/config \
+#         mkdir -p $HOME/.kube \
+#         touch $HOME/.kube/config \
+#         export KUBECONFIG=$HOME/.kube/config \
+#         minikube start --vm-driver=none --extra-config=kubelet.resolv-conf=/var/run/systemd/resolve/resolv.conf '
+#         EOL >/app/start-sc ript.sh && \
+#         sh /app/start-script.sh || true
+
+
+- name: Check ingress add-on
+  shell:  minikube addons list | grep ingress | awk -F":" '{ print $2 }' | sed 's/ //g'
+  changed_when: false
+  failed_when: false
+  register: minikube_ingress_result
+
+- name: Enable ingress add-on
+  shell: minikube addons enable ingress
+  changed_when: false
+  failed_when: false
+  register: minikube_enable_result
+  when: minikube_ingress_result
+
+
+- name: Wait ingress pod 
+  command: sleep 10 
+

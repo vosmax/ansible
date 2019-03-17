@@ -1,0 +1,7 @@
+---
+- name: Install kubectl binary
+  get_url:
+    url: 'https://storage.googleapis.com/kubernetes-release/release/v{{ kubectl.version }}/bin/linux/amd64/kubectl'
+    dest: /usr/local/bin/kubectl
+    mode: 0755
+  when: not stat_kubectl_result.stat.exists

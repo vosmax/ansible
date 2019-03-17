@@ -1,0 +1,57 @@
+---
+- name: Create dir for binaries
+  file:
+   path: /app/
+   state: directory
+
+- name: Install helm
+  unarchive:
+    src: https://storage.googleapis.com/kubernetes-helm/helm-v2.12.3-linux-amd64.tar.gz
+    dest: /app/
+    mode: 755
+    creates: /app/linux-amd64/helm
+    force: yes
+    remote_src: yes
+  register: stat_helm_status  
+
+- debug: 
+    var: stat_helm_status
+
+- name: Copy helm 
+  copy:
+    src: /app/linux-amd64/helm
+    dest: /usr/local/bin/helm
+    remote_src: yes
+    mode: +x    
+  when: not stat_helm_status.failed
+
+- name: Configure Helm and kindly wait for tiller pod
+  shell: | 
+     helm init 
+     sleep 15   
+     helm plugin install --version master https://github.com/sagansystems/helm-github.git
+  failed_when: false   
+
+- template:
+    src: values.yml.j2
+    dest: /values.yml 
+  when: not stat_helm_status.failed
+
+- name: Apply django-todo chart
+  shell: helm github upgrade --install -f /values.yml --repo  https://github.com/vosmax/djangotodo-chart.git
+  failed_when: false
+  register: chart_apply_result
+  when: not stat_helm_status.failed
+
+- name: Info message 
+  debug:
+      msg:
+        - '#####################################################################################'
+        - '#                                                                                                      '
+        - '#   Site will be availabe soon. Need a bit time to download images and start up services               '
+        - "#   Application is available here: http://{{ helm_vars.web.host}}                                      "
+        - '#   If you run localy add dns record on you PC                                                         '
+        - '#                                                                                                      '
+        - '#  Note: Minikube configs saved in root home folder. Use them to manage minikube                       ' 
+        - '######################################################################################'  
+

@@ -1,0 +1,49 @@
+---
+minikube: 
+  version: '0.35.0'
+  enable_ingress: true 
+
+kubectl:
+  version: '1.13.0'  
+
+helm_vars: 
+  chratname: 'djangotodo'   
+  namespace: 'todo'
+  env: 
+    SUPERUSER: 'todoadmin'
+    SUPERUSERPWD: 'test'
+    FLUSHDATA: 'true'  
+  db:
+    name: 'todo'
+    user: 'todouser'
+    password: 123465 
+    host: 'postgresdb-service'
+    port: 5432  
+    flush: true
+  web:
+    host: 'ec2-18-185-114-17.eu-central-1.compute.amazonaws.com'  
+
+packages: 
+    - apt-transport-https 
+    - ca-certificates 
+    - curl 
+    - gnupg-agent 
+    - software-properties-common
+    - socat 
+    - unzip 
+    - curl 
+    - htop 
+    - ncdu 
+    - iftop 
+    - atop   
+
+docker: 
+  version: '18.06.3~ce~3-0~ubuntu'
+  apt:
+    key_id: '9DC858229FC7DD38854AE2D88D81803C0EBFCD88'
+    url: 'https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg'
+    repository: >
+               deb [arch=amd64]
+               https://download.docker.com/linux/{{ ansible_distribution | lower }}
+               {{ ansible_distribution_release }} stable  
+

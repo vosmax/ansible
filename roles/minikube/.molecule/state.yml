@@ -1,0 +1,29 @@
+---
+converged: null
+created: true
+default_platform: null
+default_provider: null
+driver: vagrant
+driver_config:
+  current_platform: ubuntu/xenial64
+  current_provider: virtualbox
+  instances:
+  - ansible_groups:
+    - group1
+    name: minikube
+    vm_name: minikube
+  platforms:
+  - box: trusty64
+    box_url: https://vagrantcloud.com/ubuntu/boxes/trusty64/versions/v20190313.0.0/providers/virtualbox.box
+    name: ubuntu/xenial64
+  providers:
+  - name: virtualbox
+    options:
+      cpus: 2
+      memory: 512
+    type: virtualbox
+hosts:
+  minikube:
+    groups:
+    - group1
+multiple_platforms: null

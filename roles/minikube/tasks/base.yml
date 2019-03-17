@@ -1,0 +1,24 @@
+
+- name: Install list of packages
+  apt: name={{item}} 
+  state: absent
+  with_items: 
+    - "{{ packages }}"
+
+- name: Add Docker's public PGP key to the APT keyring
+  apt_key:
+    id: "{{ docker.apt.key_id }}"
+    url: "{{ docker.apt.url }}"
+
+- name: Configure Docker's upstream APT repository
+  apt_repository:
+    repo: "{{ docker.apt.repository }}"
+    update_cache: true
+
+- name: Install Docker
+  apt:
+    name: "docker-ce={{ docker.version }}"
+    state: present
+
+   
+  
