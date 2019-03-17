@@ -2,7 +2,7 @@
 # Ansible playbook
 For minkube and django-todo deploy
 
-Just set variables for chart n values.yaml and variales to configure host. 
+Just set variables in values.yaml file. 
 Variables have desribption in vars folder
 
 Basicly, it's enough to set *helm_chart.web.host* variable and put *host* to hosts file in inventory to have a great chance work this app.
