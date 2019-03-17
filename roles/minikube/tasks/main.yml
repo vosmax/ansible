@@ -33,7 +33,7 @@
 - name: Include minikube installtion tasks
   become: yes
   include_tasks: minikube.yml
-  # when: not stat_minikube_result.stat.exists 
+  when: not stat_minikube_result.stat.exists 
 
 - name: Include helm installtion tasks
   become: yes

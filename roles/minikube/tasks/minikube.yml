@@ -21,24 +21,6 @@
 
 - name: Start minikube
   shell: sh /run-minikube.sh    
-# - name: Start minikube
-#   shell: |
-#         bash echo <<< EOL '\
-#         #!/usr/bin/env bash
-#         set -e
-
-#         export MINIKUBE_WANTUPDATENOTIFICATION=false \
-#         export MINIKUBE_WANTREPORTERRORPROMPT=false \
-#         export CHANGE_MINIKUBE_NONE_USER=true \
-#         export MINIKUBE_HOME=$HOME \
-#         export KUBECONFIG=$HOME/.kube/config \
-#         mkdir -p $HOME/.kube \
-#         touch $HOME/.kube/config \
-#         export KUBECONFIG=$HOME/.kube/config \
-#         minikube start --vm-driver=none --extra-config=kubelet.resolv-conf=/var/run/systemd/resolve/resolv.conf '
-#         EOL >/app/start-sc ript.sh && \
-#         sh /app/start-script.sh || true
-
 
 - name: Check ingress add-on
   shell:  minikube addons list | grep ingress | awk -F":" '{ print $2 }' | sed 's/ //g'
