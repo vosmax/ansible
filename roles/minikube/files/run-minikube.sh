@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-# chown -R $USER $HOME/.kube &&\
-# chgrp -R $USER $HOME/.kube &&\
-# chown -R $USER $HOME/.minikube &&\
-# chgrp -R $USER $HOME/.minikube &&\
 export MINIKUBE_WANTUPDATENOTIFICATION=false &&\
 export MINIKUBE_WANTREPORTERRORPROMPT=false &&\
 export CHANGE_MINIKUBE_NONE_USER=true &&\
